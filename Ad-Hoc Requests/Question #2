@@ -3,5 +3,19 @@ unique_products_2020
 unique_products_2021 
 percentage_chg 
 
+WITH product_counts AS (
+    SELECT 
+        COUNT(DISTINCT product_code) AS unique_products_2020,
+        (
+            SELECT COUNT(DISTINCT product_code)
+            FROM fact_gross_price 
+            WHERE fiscal_year = 2021
+        ) AS unique_products_2021
+    FROM fact_gross_price 
+    WHERE fiscal_year = 2020
+)
 
-<pre> ```sql WITH product_counts AS ( SELECT COUNT(DISTINCT product_code) AS unique_products_2020, ( SELECT COUNT(DISTINCT product_code) FROM fact_gross_price WHERE fiscal_year = 2021 ) AS unique_products_2021 FROM fact_gross_price WHERE fiscal_year = 2020 ) SELECT *, (unique_products_2021 - unique_products_2020) * 100.0 / unique_products_2020 AS pct_chg FROM product_counts; ``` </pre>
+SELECT 
+    *,
+    (unique_products_2021 - unique_products_2020) * 100.0 / unique_products_2020 AS pct_chg
+FROM product_counts;
